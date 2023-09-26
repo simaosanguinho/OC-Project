@@ -86,8 +86,7 @@ int main() {
             }
 
             /************************************/
-            printf("L1 DCM: %lld\n", values[1]);
-            float const avg_misses = (float)(values[0]) / n_iterations;
+            float const avg_misses = (float)(values[1]) / n_iterations;
             float const avg_time = (float)(end_usec - start_usec) / n_iterations;
             float const avg_cycles = (float)(end_cycles - start_cycles) / n_iterations;
             fprintf(stdout,

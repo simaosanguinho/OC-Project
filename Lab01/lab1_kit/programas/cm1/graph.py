@@ -5,7 +5,7 @@ import matplotlib as mpl
 
 
 df = pd.DataFrame()
-df = pd.concat((df, pd.read_csv(f"/Users/simaosanguinho/Repos/OC-Project/Lab01/lab1_kit/programas/cm1/cm1.out", delimiter="\t")))
+df = pd.concat((df, pd.read_csv(f"/Users/simaosanguinho/Repos/OC-Project/Lab01/lab1_kit/programas/cm1/test2.out", delimiter="\t")))
 
 
 def strip_labels(val):
@@ -48,7 +48,7 @@ mpl.rcParams["figure.figsize"] = [20, 12]
 sns.set_theme(style='whitegrid', font_scale=1.5)
 
 g_results = sns.lineplot(
-    data=df_avg, x="stride", y="avg_misses", hue="cache_size", palette="Set2")
+    data=df_avg, x="stride", y="avg_misses", hue="cache_size", palette="pastel", linewidth=2.5)
 g_results.set_xscale("log", base=2)
 g_results.set_xlabel("Strides (Bytes)")
 g_results.set_ylabel("Average Misses")
