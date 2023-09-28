@@ -6,7 +6,7 @@ import matplotlib as mpl
 
 df = pd.DataFrame()
 df = pd.concat((df, pd.read_csv(f"/Users/simaosanguinho/Repos/OC-Project/Lab01/lab1_kit/programas/cm1/test2.out", delimiter="\t")))
-
+                                    
 
 def strip_labels(val):
     value = val.split("=")[1]
@@ -14,22 +14,17 @@ def strip_labels(val):
 
 
 df = pd.DataFrame()
-for i in range(10):
-    df = pd.concat(
-        (
-            df,
-            pd.read_csv(
-                f"cm1.out",
-                delimiter="\t",
-                names=["cache_size", "stride", "avg_misses", "avg_time"],
-                converters={
-                    "cache_size": strip_labels,
-                    "stride": strip_labels,
-                    "avg_misses": strip_labels,
-                    "avg_time": strip_labels,
-                },
-            ),
-        )
+
+df = pd.read_csv(
+    "/Users/simaosanguinho/Repos/OC-Project/Lab01/lab1_kit/programas/cm1/test2.out",
+    delimiter="\t",
+    names=["cache_size", "stride", "avg_misses", "avg_time"],
+    converters={
+        "cache_size": strip_labels,
+        "stride": strip_labels,
+        "avg_misses": strip_labels,
+        "avg_time": strip_labels,
+    },
     )
 
 df = df.reset_index()

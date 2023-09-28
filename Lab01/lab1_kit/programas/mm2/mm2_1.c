@@ -23,7 +23,19 @@ void setup(int16_t m1[N][N], int16_t m2[N][N], int16_t m3[N][N]) {
     /*      MATRIX TRANSPOSITION        */
     /************************************/
 
+    /* Gets the starting time in microseconds */
+
+    long long const start_trans = PAPI_get_real_usec();
     transpose(tmp, m2);
+
+    /* Gets the ending time in microseconds */
+    long long end_trans = PAPI_get_real_usec();
+
+    // print time to transpose matrix
+    fprintf(stdout, "Wall clock time [seconds]: %f\n",
+            (double)(end_trans - start_trans) / 1000000);
+
+
 }
 
 void transpose(int16_t m[N][N], int16_t res[N][N]) {
