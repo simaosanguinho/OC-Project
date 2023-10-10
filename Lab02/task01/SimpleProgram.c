@@ -14,9 +14,11 @@ int main() {
   clock = getTime();
   printf("Time: %d\n", clock);
 
+  resetTime();
   read(64, (uint8_t *)(&value2));
   clock = getTime();
   printf("Time: %d\n", clock);
+  resetTime();
   read(1, (uint8_t *)(&value2));
   clock = getTime();
   printf("Time: %d\n", clock);
