@@ -34,7 +34,7 @@ void initCache() { SimpleCache.init = 0; }
 
 void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
-  uint32_t index, Tag, MemAddress;
+  uint32_t Tag, MemAddress;
   uint8_t TempBlock[BLOCK_SIZE];
 
   /* init cache */

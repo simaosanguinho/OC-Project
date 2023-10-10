@@ -32,40 +32,58 @@ void accessDRAM(uint32_t address, uint8_t *data, uint32_t mode) {
 
 void initCache() { L1cache.init = 0; }
 
+int log_base2(int x) {
+    int result = 0.0;
+    int increment = 1.0;
+    while (x > 2.0) {
+        x /= 2.0;
+        result += increment;
+    }
+    return result;
+}
+
+
 void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
-  uint32_t index, Tag, MemAddress;
+  uint32_t Tag, Index, MemAddress;
+  // uint32_t Offset;
   uint8_t TempBlock[BLOCK_SIZE];
+  int indexBits, offsetBits;
 
   /* init cache */
   if (L1cache.init == 0) {
-
     for (int i = 0; i < L1_N_LINES; i++) {
       L1cache.lines[i].Valid = 0;
     }
-    
-
     L1cache.init = 1;
   }
 
-  CacheLine *Line = &L1cache.line;
+  CacheLine *Lines = L1cache.lines;
+  indexBits = log_base2(L1_N_LINES); // 8 bits
+  offsetBits = 3;
 
-  Tag = address >> 3; // Why do I do this?
+  //Offset = address & 0x7; // 3 LSBs
+  Index = address << (32 - indexBits - offsetBits);
+  Index = Index >> (32 - indexBits);
 
-  MemAddress = address >> 3; // again this....!
-  MemAddress = MemAddress << 3; // address of the block in memory
+  Tag = address >> (indexBits + offsetBits);
+
+  // TODO: memadress == tag or tag + index
+  MemAddress = address >> offsetBits; // again this....!
+  MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
+  CacheLine *Line = &(Lines[Index]);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
 
     if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
       MemAddress = Line->Tag << 3;        // get address of the block in memory
-      accessDRAM(MemAddress, &(L1Cache[0]), MODE_WRITE); // then write back old block
+      accessDRAM(MemAddress, &(L1Cache[Index]), MODE_WRITE); // then write back old block
     }
 
-    memcpy(&(L1Cache[0]), TempBlock,
+    memcpy(&(L1Cache[Index]), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
     Line->Valid = 1;
     Line->Tag = Tag;
@@ -74,23 +92,25 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   if (mode == MODE_READ) {    // read data from cache line
     if (0 == (address % 8)) { // even word on block
-      memcpy(data, &(L1Cache[0]), WORD_SIZE);
+      memcpy(data, &(L1Cache[Index]), WORD_SIZE);
     } else { // odd word on block
-      memcpy(data, &(L1Cache[WORD_SIZE]), WORD_SIZE);
+      memcpy(data, &(L1Cache[Index + WORD_SIZE]), WORD_SIZE);
     }
     time += L1_READ_TIME;
   }
 
   if (mode == MODE_WRITE) { // write data from cache line
     if (!(address % 8)) {   // even word on block
-      memcpy(&(L1Cache[0]), data, WORD_SIZE);
+      memcpy(&(L1Cache[Index]), data, WORD_SIZE);
     } else { // odd word on block
-      memcpy(&(L1Cache[WORD_SIZE]), data, WORD_SIZE);
+      memcpy(&(L1Cache[Index + WORD_SIZE]), data, WORD_SIZE);
     }
     time += L1_WRITE_TIME;
     Line->Dirty = 1;
   }
 }
+
+/*********************** Read and Write *************************/
 
 void read(uint32_t address, uint8_t *data) {
   accessL1(address, data, MODE_READ);
