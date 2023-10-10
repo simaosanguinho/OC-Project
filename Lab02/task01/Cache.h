@@ -7,6 +7,8 @@
 #define L1_SIZE (256 * BLOCK_SIZE)      // in bytes
 #define L2_SIZE (512 * BLOCK_SIZE)    // in bytes
 
+#define L1_N_LINES 256 // number of lines in the L1 cache
+
 #define MODE_READ 1
 #define MODE_WRITE 0
 

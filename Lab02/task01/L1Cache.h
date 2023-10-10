@@ -1,5 +1,5 @@
-#ifndef SIMPLECACHE_H
-#define SIMPLECACHE_H
+#ifndef L1CACHE_H
+#define L1CACHE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,7 @@ typedef struct CacheLine {
 
 typedef struct Cache {
   uint32_t init;
-  CacheLine line;
+  CacheLine lines[L1_N_LINES];
 } Cache;
 
 /*********************** Interfaces *************************/
