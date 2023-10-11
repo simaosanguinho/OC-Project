@@ -9,6 +9,7 @@
 
 #define L1_N_LINES 256 // number of lines in the L1 cache
 #define L2_N_LINES 256 // number of lines in the L2 cache (with associativity 2)
+#define L2_ASSOC 2     // associativity of the L2 cache
 
 #define MODE_READ 1
 #define MODE_WRITE 0

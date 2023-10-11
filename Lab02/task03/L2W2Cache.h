@@ -11,47 +11,59 @@ void resetTime();
 
 uint32_t getTime();
 
+void printL1();
+void printL2();
+void printDRAM();
+
 int log_base2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t, uint8_t *, uint32_t);
+void accessDRAM(uint32_t, unsigned char *, uint32_t);
 
 /*********************** Cache *************************/
 
 void initCache();
-void accessL1(uint32_t, uint8_t *, uint32_t);
+void accessL1(uint32_t, unsigned char *, uint32_t);
 
-void initL2Cache();
-void accessL2(uint32_t, uint8_t *, uint32_t);
+void accessL2(uint32_t, unsigned char *, uint32_t);
 
 typedef struct CacheLine {
-  uint8_t Valid;
-  uint8_t Dirty;
+  unsigned char Valid;
+  unsigned char Dirty;
   uint32_t Tag;
+  unsigned char Data[BLOCK_SIZE];
 } CacheLine;
 
 typedef struct CacheL2Line {
-  uint8_t Valid[2];
-  uint8_t Dirty[2];
+  unsigned char Valid[2];
+  unsigned char Dirty[2];
   uint32_t Tag[2];
   uint8_t Time[2];
+  unsigned char Data[BLOCK_SIZE * 2];
 } CacheL2Line;
 
-typedef struct Cache {
-  uint32_t init;
-  CacheLine lines[L1_N_LINES];
-} Cache;
 
-typedef struct L2_Cache {
+
+typedef struct L2W2_Cache {
   uint32_t init;
   CacheL2Line lines[L2_N_LINES];
 } L2_Cache;
 
+typedef struct L1_Cache {
+  uint32_t init;
+  CacheLine lines[L1_N_LINES];
+} L1_Cache;
+
+typedef struct Cache {
+  L1_Cache L1cache;
+  L2_Cache L2cache;
+} Cache;
+
 
 /*********************** Interfaces *************************/
 
-void read(uint32_t, uint8_t *);
+void read(uint32_t, unsigned char *);
 
-void write(uint32_t, uint8_t *);
+void write(uint32_t, unsigned char *);
 
 #endif

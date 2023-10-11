@@ -1,3 +1,6 @@
 dontcommit.c
 l1.out
 L1Cache
+L2Cache
+L2W2Cache
+out.txt
