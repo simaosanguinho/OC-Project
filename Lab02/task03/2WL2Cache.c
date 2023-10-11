@@ -1,4 +1,4 @@
-#include "L1Cache.h"
+#include "2WL2Cache.h"
 
 uint8_t L1Cache[L1_SIZE];
 uint8_t L2Cache[L2_SIZE];
@@ -60,7 +60,7 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
   }
 
   CacheLine *Lines = L1cache.lines;
-  indexBits = log_base2(L1_N_LINES); // 9 bits
+  indexBits = log_base2(L1_N_LINES); // 8 bits
   offsetBits = 6;
 
   // save offset for later
@@ -121,13 +121,16 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
   /* init cache */
   if (L2cache.init == 0) {
     for (int i = 0; i < L2_N_LINES; i++) {
-      L2cache.lines[i].Valid = 0;
+      L2cache.lines[i].Valid[0] = 0;
+      L2cache.lines[i].Valid[1] = 0;
+      L2cache.lines[i].Time[0] = 1; //to change first the first block
+      L2cache.lines[i].Time[1] = 0;
     }
     L2cache.init = 1;
   }
 
-  CacheLine *Lines = L2cache.lines;
-  indexBits = log_base2(L2_N_LINES); // 8 bits
+  CacheL2Line *Lines = L2cache.lines;
+  indexBits = log_base2(L2_N_LINES); //8
   offsetBits = 6;
 
   // save offset for later
@@ -142,27 +145,46 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
   Tag = address >> (indexBits + offsetBits);
   printf("        TAG: %d\n", Tag);
 
-
   // TODO: memadress == tag or tag + index
   MemAddress = address >> offsetBits; // again this....!
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
-  CacheLine *Line = &(Lines[Index]);
+  CacheL2Line *Line = &(Lines[Index]);
   printf("        Index: %d\n", Index);
 
-  if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
+  //SEARCH IN THE LINE FOR CORRECT BLOCK
+  int found = 0;
+  int line_block = 0; //the block which we will use or replace
+
+  //Look for the block
+  //TODO change to a for with i< l2_associativity
+  for (int i=0; i<2; i++){
+    if (Line->Valid[i] && Line->Tag[i] == Tag)
+      found = 1;
+      line_block = i;
+  }
+
+  if (!found) { // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
 
-    if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
-      accessDRAM(MemAddress, &(L2Cache[Index]), MODE_WRITE); // then write back old block
+    //TODO change to a for with i< l2_associativity
+    for (int i=0; i<2; i++){
+      if (Line->Time[i] == 1)
+        line_block = i;
     }
 
-    memcpy(&(L2Cache[Index]), TempBlock,
+    if ((Line->Valid[line_block]) && (Line->Dirty[line_block])) { // line has dirty block
+      accessDRAM(MemAddress, &(L2Cache[Index + (line_block)*BLOCK_SIZE]), MODE_WRITE); // then write back old block
+    }                                          //if line_block 1 we need to jump a block to get the correct one
+
+    memcpy(&(L2Cache[Index + (line_block)*BLOCK_SIZE]), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
-    Line->Valid = 1;
-    Line->Tag = Tag;
-    Line->Dirty = 0;
+    Line->Valid[line_block] = 1;
+    Line->Tag[line_block] = Tag;
+    Line->Dirty[line_block] = 0;
+    Line->Time[line_block] = 0;
+    Line->Time[!line_block] = 1; // if 0 => 1 , if 1 => 0
   } // if miss, then replaced with the correct block
 
   if (mode == MODE_READ) {    // read data from cache line
@@ -173,7 +195,7 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
   if (mode == MODE_WRITE) { // write data from cache line
     memcpy(&(L2Cache[Index + Offset]), data, WORD_SIZE);
     time += L2_WRITE_TIME;
-    Line->Dirty = 1;
+    Line->Dirty[line_block] = 1;
   }
 }
 

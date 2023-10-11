@@ -1,5 +1,5 @@
-#ifndef L1CACHE_H
-#define L1CACHE_H
+#ifndef L2CACHE_H
+#define L2CACHE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +10,8 @@
 void resetTime();
 
 uint32_t getTime();
+
+int log_base2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t, uint8_t *, uint32_t);
@@ -28,13 +30,6 @@ typedef struct CacheLine {
   uint32_t Tag;
 } CacheLine;
 
-typedef struct CacheL2Line {
-  uint8_t Valid[2];
-  uint8_t Dirty[2];
-  uint32_t Tag[2];
-  uint8_t Time[2];
-} CacheL2Line;
-
 typedef struct Cache {
   uint32_t init;
   CacheLine lines[L1_N_LINES];
@@ -42,7 +37,7 @@ typedef struct Cache {
 
 typedef struct L2_Cache {
   uint32_t init;
-  CacheL2Line lines[L2_N_LINES];
+  CacheLine lines[L2_N_LINES];
 } L2_Cache;
 
 
