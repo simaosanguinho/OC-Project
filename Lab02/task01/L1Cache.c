@@ -79,7 +79,7 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   /* access Cache*/
   CacheLine *Line = &(Lines[Index]);
-  printf("        Index: %d\n", Index);
+  printf("\tIndex: %d\n", Index);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
