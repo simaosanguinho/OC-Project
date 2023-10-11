@@ -63,19 +63,17 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
   offsetBits = 6;
 
   // save offset for later
-  Offset = address << 26;
-  Offset = Offset >> 26;
-  printf("        OFFSET: %d\n", Offset);
+  Offset = address << (32 - offsetBits);
+  Offset = Offset >> (32 - offsetBits);
+  printf("\tOFFSET: %d\n", Offset);
 
-  //Offset = address & 0x7; // 6 LSBs
   Index = address << (32 - indexBits - offsetBits);
   Index = Index >> (32 - indexBits);
 
   Tag = address >> (indexBits + offsetBits);
-  printf("        TAG: %d\n", Tag);
+  printf("\tTAG: %d\n", Tag);
 
 
-  // TODO: memadress == tag or tag + index
   MemAddress = address >> offsetBits; // again this....!
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
