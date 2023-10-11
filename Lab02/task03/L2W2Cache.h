@@ -18,14 +18,14 @@ void printDRAM();
 int log_base2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t, unsigned char *, uint32_t);
+void accessDRAM(uint32_t, unsigned char *, uint8_t);
 
 /*********************** Cache *************************/
 
 void initCache();
-void accessL1(uint32_t, unsigned char *, uint32_t);
+void accessL1(uint32_t, unsigned char *, uint8_t);
 
-void accessL2(uint32_t, unsigned char *, uint32_t);
+void accessL2(uint32_t, unsigned char *, uint8_t);
 
 typedef struct CacheLine {
   unsigned char Valid;

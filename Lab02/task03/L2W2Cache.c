@@ -10,7 +10,7 @@ void resetTime() { time = 0; }
 uint32_t getTime() { return time; }
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessDRAM(uint32_t address, unsigned char *data, u_int8_t mode) {
 
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
@@ -46,7 +46,7 @@ int log_base2(int x) {
   return result;
 }
 
-void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE); // set all values to 0
@@ -105,7 +105,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
   }
 }
 
-void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
