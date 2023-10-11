@@ -27,12 +27,31 @@ diff ./outputL2.txt ./tests_alunos/results_L2_1W.txt > diff1L2.txt
 diff ./outputL2W2.txt ./tests_alunos/results_L2_2W.txt > diff2L2W2.txt
 
 # Display the results
-echo "Comparison between L1 test:"
-cat diffL1.txt
-echo "Comparison between L2 test:"
-cat diff1L2.txt
-echo "Comparison between L3 test:"
-cat diff2L2W2.txt
+if [ -s diffL1.txt ]
+then
+    echo "Comparison between L1 test:"
+    cat diffL1.txt
+else
+    echo "Comparison between L1 test: No differences found"
+fi
+
+
+if [ -s diff1L2.txt ]
+then
+    echo "Comparison between L2 test:"
+    cat diff1L2.txt
+else
+    echo "Comparison between L2 test: No differences found"
+fi
+
+
+if [ -s diff2L2W2.txt ]
+then
+    echo "Comparison between L2W2 test:"
+    cat diff2L2W2.txt
+else
+    echo "Comparison between L2W2 test: No differences found"
+fi
 
 # Clean up
 rm outputL1.txt outputL2.txt outputL2W2.txt diffL1.txt diff1L2.txt diff2L2W2.txt ./task01/L1Cache ./task02/L2Cache ./task03/L2W2Cache
