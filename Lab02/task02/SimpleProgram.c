@@ -12,6 +12,7 @@ int main() {
     resetTime();
     initCache();
 
+
     printf("\nNumber of words: %d\n", (n-1)/WORD_SIZE + 1);
     
     for(int i = 0; i < n; i+=WORD_SIZE) {

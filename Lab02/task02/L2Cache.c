@@ -28,8 +28,10 @@ void accessDRAM(uint32_t address, unsigned char *data, uint32_t mode) {
 }
 
 /*********************** L1 & L2 cache *************************/
-void initCache() { L1cache.init = 0; }
-void initL2Cache() { L2cache.init = 0; }
+void initCache() { 
+  L1cache.init = 0;
+  L2cache.init = 0; 
+}
 
 int log_base2(int x) {
     int result = 0.0;
@@ -85,7 +87,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
       accessDRAM(MemAddress, Lines->Data, MODE_WRITE); // then write back old block
     }
     // MUDAR &&&&&&&????????
-    memcpy(&(Lines->Data), TempBlock,
+    memcpy(Lines->Data, TempBlock,
            BLOCK_SIZE); // copy new block to cache line
     Line->Valid = 1;
     Line->Tag = Tag;
