@@ -9,8 +9,6 @@ void resetTime() { time = 0; }
 
 uint32_t getTime() { return time; }
 
-
-
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
   // printf("AccessDRAM\n");
@@ -41,18 +39,18 @@ void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
 
 void initCache() { L1cache.init = 0; }
 
-int log_base2(int x) {
-    if (x == 0) {
-        return 0;
-    }
+uint8_t logBase2(int x) {
+  if (x == 0) {
+    return 0;
+  }
 
-    int result = 1.0;
-    int increment = 1.0;
-    while (x > 2.0) {
-        x /= 2.0;
-        result += increment;
-    }
-    return result;
+  uint8_t result = 1;
+  uint8_t increment = 1;
+  while (x > 2) {
+    x /= 2;
+    result += increment;
+  }
+  return result;
 }
 
 void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
@@ -72,7 +70,7 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   }
 
   CacheLine *Lines = L1cache.lines;
-  indexBits = log_base2(L1_N_LINES); // 8 bits
+  indexBits = logBase2(L1_N_LINES); // 8 bits
   offsetBits = 6;
 
   // save offset for later
@@ -86,8 +84,7 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   Tag = address >> (indexBits + offsetBits);
   // printf("\tTAG: %d\n", Tag);
 
-
-  MemAddress = address >> offsetBits; // again this....!
+  MemAddress = address >> offsetBits;    // again this....!
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
@@ -96,11 +93,12 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
-    
+
     if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
-      accessDRAM(MemAddress, Line->Data, MODE_WRITE); // then write back old block
+      accessDRAM(MemAddress, Line->Data,
+                 MODE_WRITE); // then write back old block
     }
-  
+
     memcpy(&(Line->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
     Line->Valid = 1;
@@ -108,7 +106,7 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
     Line->Dirty = 0;
   } // if miss, then replaced with the correct block
 
-  if (mode == MODE_READ) {    // read data from cache line
+  if (mode == MODE_READ) { // read data from cache line
     memcpy(data, &(Line->Data[Offset]), WORD_SIZE);
     time += L1_READ_TIME;
   }

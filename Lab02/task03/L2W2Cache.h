@@ -15,7 +15,7 @@ void printL1();
 void printL2();
 void printDRAM();
 
-int log_base2(int x);
+uint8_t logBase2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t, unsigned char *, uint8_t);

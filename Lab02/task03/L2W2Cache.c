@@ -32,13 +32,13 @@ void initCache() {
   cache.L2cache.init = 0;
 }
 
-int log_base2(int x) {
+uint8_t logBase2(int x) {
   if (x == 0) {
     return 0;
   }
 
-  int result = 1;
-  int increment = 1;
+  uint8_t result = 1;
+  uint8_t increment = 1;
   while (x > 2) {
     x /= 2;
     result += increment;
@@ -61,13 +61,13 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
 
   CacheL1Line *Lines = cache.L1cache.lines; // get lines from L1
 
-  offsetBits = log_base2(BLOCK_SIZE);    // how many bits for offset
+  offsetBits = logBase2(BLOCK_SIZE);     // how many bits for offset
   Offset = address << (32 - offsetBits); // shift address to the left
   Offset =
       Offset >>
       (32 - offsetBits); // shift address to the right, so we get the offset
 
-  indexBits = log_base2(L1_N_LINES);                // how many bits for index
+  indexBits = logBase2(L1_N_LINES);                 // how many bits for index
   Index = address << (32 - indexBits - offsetBits); // shift address to the left
   Index = Index >>
           (32 - indexBits); // shift address to the right, so we get the index
@@ -125,13 +125,13 @@ void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
   }
 
   CacheL2Line *Lines = cache.L2cache.lines; // get lines from L2
-  offsetBits = log_base2(BLOCK_SIZE);       // how many bits for offset
+  offsetBits = logBase2(BLOCK_SIZE);        // how many bits for offset
   Offset = address << (32 - offsetBits);    // shift address to the left
   Offset =
       Offset >>
       (32 - offsetBits); // shift address to the right, so we get the offset
 
-  indexBits = log_base2(L2_N_LINES);                // how many bits for index
+  indexBits = logBase2(L2_N_LINES);                 // how many bits for index
   Index = address << (32 - indexBits - offsetBits); // shift address to the left
   Index = Index >>
           (32 - indexBits); // shift address to the right, so we get the index

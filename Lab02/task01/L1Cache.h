@@ -11,6 +11,8 @@ void resetTime();
 
 uint32_t getTime();
 
+uint8_t logBase2(int x);
+
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t, unsigned char *, uint8_t);
 
