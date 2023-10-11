@@ -34,7 +34,11 @@ void initCache() {
 }
 
 int log_base2(int x) {
-    int result = 0.0;
+    if (x == 0) {
+        return 0;
+    }
+
+    int result = 1.0;
     int increment = 1.0;
     while (x > 2.0) {
         x /= 2.0;
@@ -42,7 +46,6 @@ int log_base2(int x) {
     }
     return result;
 }
-
 
 void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
 
