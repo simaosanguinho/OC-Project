@@ -48,7 +48,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset;
   // uint32_t Offset;
-  uint8_t TempBlock[BLOCK_SIZE];
+  unsigned char TempBlock[BLOCK_SIZE];
   int indexBits, offsetBits;
 
   /* init cache */
