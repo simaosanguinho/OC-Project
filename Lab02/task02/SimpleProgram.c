@@ -12,7 +12,6 @@ int main() {
     resetTime();
     initCache();
 
-
     printf("\nNumber of words: %d\n", (n-1)/WORD_SIZE + 1);
     
     for(int i = 0; i < n; i+=WORD_SIZE) {
@@ -25,6 +24,7 @@ int main() {
       read(i, (unsigned char *)(&value));
       clock1 = getTime();
       printf("Read; Address %d; Value %d; Time %d\n", i, value, clock1);
+      
     }  
   }
 

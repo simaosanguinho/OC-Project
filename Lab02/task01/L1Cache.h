@@ -11,6 +11,8 @@ void resetTime();
 
 uint32_t getTime();
 
+void printL1();
+
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t, unsigned char *, uint32_t);
 

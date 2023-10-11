@@ -11,6 +11,10 @@ void resetTime();
 
 uint32_t getTime();
 
+void printL1();
+void printL2();
+void printDRAM();
+
 int log_base2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
