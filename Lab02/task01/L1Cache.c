@@ -4,8 +4,6 @@ unsigned char DRAM[DRAM_SIZE];
 uint32_t time;
 Cache L1cache;
 
-
-
 /**************** Time Manipulation ***************/
 void resetTime() { time = 0; }
 
