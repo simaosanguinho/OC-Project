@@ -1,4 +1,4 @@
-#include "2WL2Cache.h"
+#include "L2W2Cache.h"
 
 uint8_t L1Cache[L1_SIZE];
 uint8_t L2Cache[L2_SIZE];

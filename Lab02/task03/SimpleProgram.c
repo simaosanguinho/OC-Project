@@ -1,4 +1,4 @@
-#include "L1Cache.h"
+#include "L2W2Cache.h"
 
 int main() {
 

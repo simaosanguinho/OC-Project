@@ -1,5 +1,5 @@
-#ifndef 2WL2CACHE_H
-#define 2WL2CACHE_H
+#ifndef L2W2CACHE_H
+#define L2W2CACHE_H
 
 #include <stdio.h>
 #include <stdlib.h>
