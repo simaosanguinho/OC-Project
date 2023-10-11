@@ -55,11 +55,9 @@ uint8_t logBase2(int x) {
 
 void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
 
-  uint32_t Tag, Index, MemAddress, Offset;
-  // uint32_t Offset;
+  uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE);
-  int indexBits, offsetBits;
 
   /* init cache */
   if (L1cache.init == 0) {
@@ -70,26 +68,26 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   }
 
   CacheLine *Lines = L1cache.lines;
-  indexBits = logBase2(L1_N_LINES); // 8 bits
-  offsetBits = 6;
 
-  // save offset for later
-  Offset = address << (32 - offsetBits);
-  Offset = Offset >> (32 - offsetBits);
-  // printf("\tOFFSET: %d\n", Offset);
+  offsetBits = logBase2(BLOCK_SIZE);     // how many bits for offset
+  Offset = address << (32 - offsetBits); // shift address to the left
+  Offset =
+      Offset >>
+      (32 - offsetBits); // shift address to the right, so we get the offset
 
-  Index = address << (32 - indexBits - offsetBits);
-  Index = Index >> (32 - indexBits);
+  indexBits = logBase2(L1_N_LINES);                 // how many bits for index
+  Index = address << (32 - indexBits - offsetBits); // shift address to the left
+  Index = Index >>
+          (32 - indexBits); // shift address to the right, so we get the index
 
-  Tag = address >> (indexBits + offsetBits);
-  // printf("\tTAG: %d\n", Tag);
+  Tag = address >>
+        (indexBits + offsetBits); // get tag, by shifting address to the right
 
   MemAddress = address >> offsetBits;    // again this....!
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
   CacheLine *Line = &(Lines[Index]);
-  // printf("\tIndex: %d\n", Index);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM

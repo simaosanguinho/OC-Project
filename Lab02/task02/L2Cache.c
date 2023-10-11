@@ -121,21 +121,24 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
   }
 
   CacheLine *Lines = cache.L2cache.lines;
-  indexBits = logBase2(L2_N_LINES); // 8 bits
-  offsetBits = 6;
+  
+  offsetBits = logBase2(BLOCK_SIZE);     // how many bits for offset
+  Offset = address << (32 - offsetBits); // shift address to the left
+  Offset =
+      Offset >>
+      (32 - offsetBits); // shift address to the right, so we get the offset
 
-  // save offset for later
-  Offset = address << (32 - offsetBits);
-  Offset = Offset >> (32 - offsetBits);
+  indexBits = logBase2(L2_N_LINES);                 // how many bits for index
+  Index = address << (32 - indexBits - offsetBits); // shift address to the left
+  Index = Index >>
+          (32 - indexBits); // shift address to the right, so we get the index
 
-  // Offset = address & 0x7; // 6 LSBs
-  Index = address << (32 - indexBits - offsetBits);
-  Index = Index >> (32 - indexBits);
+  Tag = address >>
+        (indexBits + offsetBits); // get tag, by shifting address to the right
 
-  Tag = address >> (indexBits + offsetBits);
-
-  // TODO: memadress == tag or tag + index
-  MemAddress = address >> offsetBits;    // again this....!
+  MemAddress =
+      address >>
+      offsetBits; // shift address to the right, so we can remove the offset
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
