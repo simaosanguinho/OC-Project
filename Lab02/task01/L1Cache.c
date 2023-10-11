@@ -33,7 +33,11 @@ void accessDRAM(uint32_t address, uint8_t *data, uint32_t mode) {
 void initCache() { L1cache.init = 0; }
 
 int log_base2(int x) {
-    int result = 0.0;
+    if (x == 0) {
+        return 0;
+    }
+
+    int result = 1.0;
     int increment = 1.0;
     while (x > 2.0) {
         x /= 2.0;
@@ -60,6 +64,7 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   CacheLine *Lines = L1cache.lines;
   indexBits = log_base2(L1_N_LINES); // 8 bits
+  printf("Index bits: %d\n", indexBits);
   offsetBits = 6;
 
   // save offset for later

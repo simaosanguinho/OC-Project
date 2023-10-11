@@ -16,7 +16,7 @@ int main() {
 
   resetTime();
 
-  read(63, (uint8_t *)(&value2));
+  read(255*64, (uint8_t *)(&value2));
 
   clock = getTime();
   printf("Time: %d\n", clock);
