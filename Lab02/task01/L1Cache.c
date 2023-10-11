@@ -110,7 +110,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
-
+    
     if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
       accessDRAM(MemAddress, Line->Data, MODE_WRITE); // then write back old block
     }

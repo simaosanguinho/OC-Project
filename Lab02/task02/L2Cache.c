@@ -62,7 +62,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
   }
 
   CacheLine *Lines = cache.L1cache.lines;
-  indexBits = log_base2(L1_N_LINES); // 9 bits
+  indexBits = log_base2(L1_N_LINES); // 8 bits
   offsetBits = 6;
 
   // save offset for later
@@ -83,13 +83,13 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
 
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
-    accessL2(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
+    accessL2(MemAddress, TempBlock, MODE_READ); // get new block from L2
 
     if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
-      accessDRAM(MemAddress, Lines->Data, MODE_WRITE); // then write back old block
+      accessL2(MemAddress, Lines->Data, MODE_WRITE); // then write back old block
     }
     // MUDAR &&&&&&&????????
-    memcpy(Lines->Data, TempBlock,
+    memcpy(&(Lines->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
     Line->Valid = 1;
     Line->Tag = Tag;
