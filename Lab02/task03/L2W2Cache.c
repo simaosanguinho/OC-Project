@@ -11,7 +11,6 @@ uint32_t getTime() { return time; }
 
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t address, unsigned char *data, u_int8_t mode) {
-
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
 
@@ -32,7 +31,7 @@ void initCache() {
   cache.L2cache.init = 0;
 }
 
-uint8_t logBase2(int x) {  // used to get the number of bits 
+uint8_t logBase2(int x) { // used to get the number of bits
   if (x == 0) {
     return 0;
   }
@@ -108,7 +107,6 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
 }
 
 void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
-
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE); // set all values to 0
@@ -162,7 +160,6 @@ void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
 
   if (!found) {                                   // if block not present - Miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
-
     for (int i = 0; i < L2_ASSOC; i++) { // iterate over the blocks in the line
       if (Line->Time[i] == 1) { // if we found the block to replace, aka
                                 // the oldest one
