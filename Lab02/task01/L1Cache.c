@@ -94,16 +94,16 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
 
-    if ((Line->Valid) && (Line->Dirty)) { // line has dirty block
+    if ((Line->Valid) && (Line->Dirty)) { // if line has dirty block
       accessDRAM(MemAddress, Line->Data,
                  MODE_WRITE); // then write back old block
     }
 
     memcpy(&(Line->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
-    Line->Valid = 1;
-    Line->Tag = Tag;
-    Line->Dirty = 0;
+    Line->Valid = 1;  // set valid bit to 1
+    Line->Tag = Tag;  // set tag to the correct tag
+    Line->Dirty = 0;  // set dirty bit to 0, because we just read the block
   } // if miss, then replaced with the correct block
 
   if (mode == MODE_READ) { // read data from cache line
@@ -114,22 +114,16 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   if (mode == MODE_WRITE) { // write data from cache line
     memcpy(&(Line->Data[Offset]), data, WORD_SIZE);
     time += L1_WRITE_TIME;
-    Line->Dirty = 1;
+    Line->Dirty = 1;  // set dirty bit to 1, because we wrote to the block
   }
 }
 
 /*********************** Read and Write *************************/
 
 void read(uint32_t address, unsigned char *data) {
-  // printf("Read MODE\n");
-  // printf("\tAddress: %d\n", address);
   accessL1(address, data, MODE_READ);
-  // printf("\tData: %d\n", *data);
 }
 
 void write(uint32_t address, unsigned char *data) {
-  // printf("Write MODE\n");
-  // printf("\tAddress: %d\n", address);
   accessL1(address, data, MODE_WRITE);
-  // printf("\tData: %d\n", *data);
 }
