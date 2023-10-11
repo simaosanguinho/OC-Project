@@ -32,7 +32,7 @@ void initCache() {
   cache.L2cache.init = 0;
 }
 
-uint8_t logBase2(int x) {
+uint8_t logBase2(int x) {  // used to get the number of bits 
   if (x == 0) {
     return 0;
   }

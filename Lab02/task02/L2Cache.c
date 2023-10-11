@@ -11,7 +11,6 @@ uint32_t getTime() { return time; }
 
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
-
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
 
@@ -32,7 +31,7 @@ void initCache() {
   cache.L2cache.init = 0;
 }
 
-uint8_t logBase2(int x) {
+uint8_t logBase2(int x) { // used to get the number of bits
   if (x == 0) {
     return 0;
   }
@@ -47,12 +46,9 @@ uint8_t logBase2(int x) {
 }
 
 void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
-
-  uint32_t Tag, Index, MemAddress, Offset;
-  // uint32_t Offset;
+  uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE);
-  int indexBits, offsetBits;
 
   /* init cache */
   if (cache.L1cache.init == 0) {
@@ -62,18 +58,21 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
     cache.L1cache.init = 1;
   }
 
-  CacheLine *Lines = cache.L1cache.lines;
-  indexBits = logBase2(L1_N_LINES); // 8 bits
-  offsetBits = 6;
+  CacheLine *Lines = cache.L1cache.lines; // get lines from L1
 
-  // save offset for later
-  Offset = address << (32 - offsetBits);
-  Offset = Offset >> (32 - offsetBits);
+  offsetBits = logBase2(BLOCK_SIZE);     // how many bits for offset
+  Offset = address << (32 - offsetBits); // shift address to the left
+  Offset =
+      Offset >>
+      (32 - offsetBits); // shift address to the right, so we get the offset
 
-  Index = address << (32 - indexBits - offsetBits);
-  Index = Index >> (32 - indexBits);
+  indexBits = logBase2(L1_N_LINES);                 // how many bits for index
+  Index = address << (32 - indexBits - offsetBits); // shift address to the left
+  Index = Index >>
+          (32 - indexBits); // shift address to the right, so we get the index
 
-  Tag = address >> (indexBits + offsetBits);
+  Tag = address >>
+        (indexBits + offsetBits); // get tag, by shifting address to the right
 
   MemAddress =
       address >>

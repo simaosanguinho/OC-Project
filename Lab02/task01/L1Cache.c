@@ -11,16 +11,6 @@ uint32_t getTime() { return time; }
 
 /****************  RAM memory (byte addressable) ***************/
 void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
-  // printf("AccessDRAM\n");
-  // printf("\tAddress: %d\n", address);
-  // printf("\tData: %d\n", *data);
-  // if (mode == MODE_READ) {
-  //   printf("\tMode: Read\n");
-  // }
-  // else {
-  //   printf("\tMode: Write\n");
-  // }
-
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
 
@@ -39,7 +29,7 @@ void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
 
 void initCache() { L1cache.init = 0; }
 
-uint8_t logBase2(int x) {
+uint8_t logBase2(int x) { // used to get the number of bits
   if (x == 0) {
     return 0;
   }
@@ -54,7 +44,6 @@ uint8_t logBase2(int x) {
 }
 
 void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
-
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE);
