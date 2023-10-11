@@ -29,28 +29,28 @@ diff ./outputL2W2.txt ./tests_alunos/results_L2_2W.txt > diff2L2W2.txt
 # Display the results
 if [ -s diffL1.txt ]
 then
-    echo "Comparison between L1 test:"
+    echo -e "\e[31mComparison between L1 test:\e[0m"
     cat diffL1.txt
 else
-    echo "Comparison between L1 test: No differences found"
+    echo -e "\e[32mComparison between L1 test: No differences found\e[0m"
 fi
 
 
 if [ -s diff1L2.txt ]
 then
-    echo "Comparison between L2 test:"
+    echo -e "\e[31mComparison between L2 test:\e[0m"
     cat diff1L2.txt
 else
-    echo "Comparison between L2 test: No differences found"
+    echo -e "\e[32mComparison between L2 test: No differences found\e[0m"
 fi
 
 
 if [ -s diff2L2W2.txt ]
 then
-    echo "Comparison between L2W2 test:"
+    echo -e "\e[31mComparison between L2W2 test:\e[0m"
     cat diff2L2W2.txt
 else
-    echo "Comparison between L2W2 test: No differences found"
+    echo -e "\e[32mComparison between L2W2 test: No differences found\e[0m"
 fi
 
 # Clean up
