@@ -1,6 +1,5 @@
 #include "L1Cache.h"
 
-unsigned char L2Cache[L2_SIZE];
 unsigned char DRAM[DRAM_SIZE];
 uint32_t time;
 Cache L1cache;

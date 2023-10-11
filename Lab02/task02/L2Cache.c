@@ -1,9 +1,8 @@
 #include "L2Cache.h"
 
-uint8_t DRAM[DRAM_SIZE];
+unsigned char DRAM[DRAM_SIZE];
 uint32_t time;
-Cache L1cache;
-L2_Cache L2cache;
+Cache cache;
 
 /**************** Time Manipulation ***************/
 void resetTime() { time = 0; }
@@ -29,8 +28,8 @@ void accessDRAM(uint32_t address, unsigned char *data, uint32_t mode) {
 
 /*********************** L1 & L2 cache *************************/
 void initCache() { 
-  L1cache.init = 0;
-  L2cache.init = 0; 
+  cache.L1cache.init = 0;
+  cache.L2cache.init = 0; 
 }
 
 int log_base2(int x) {
@@ -55,14 +54,14 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
   int indexBits, offsetBits;
 
   /* init cache */
-  if (L1cache.init == 0) {
+  if (cache.L1cache.init == 0) {
     for (int i = 0; i < L1_N_LINES; i++) {
-      L1cache.lines[i].Valid = 0;
+      cache.L1cache.lines[i].Valid = 0;
     }
-    L1cache.init = 1;
+    cache.L1cache.init = 1;
   }
 
-  CacheLine *Lines = L1cache.lines;
+  CacheLine *Lines = cache.L1cache.lines;
   indexBits = log_base2(L1_N_LINES); // 9 bits
   offsetBits = 6;
 
@@ -118,14 +117,14 @@ void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
   int indexBits, offsetBits;
 
   /* init cache */
-  if (L2cache.init == 0) {
+  if (cache.L2cache.init == 0) {
     for (int i = 0; i < L2_N_LINES; i++) {
-      L2cache.lines[i].Valid = 0;
+      cache.L2cache.lines[i].Valid = 0;
     }
-    L2cache.init = 1;
+    cache.L2cache.init = 1;
   }
 
-  CacheLine *Lines = L2cache.lines;
+  CacheLine *Lines = cache.L2cache.lines;
   indexBits = log_base2(L2_N_LINES); // 8 bits
   offsetBits = 6;
 
