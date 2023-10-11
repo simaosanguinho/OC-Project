@@ -111,7 +111,7 @@ void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset;
   // uint32_t Offset;
-  uint8_t TempBlock[BLOCK_SIZE];
+  unsigned char TempBlock[BLOCK_SIZE];
   int indexBits, offsetBits;
 
   /* init cache */
@@ -127,8 +127,8 @@ void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
   offsetBits = 6;
 
   // save offset for later
-  Offset = address << 26;
-  Offset = Offset >> 26;
+  Offset = address << (32 - offsetBits);
+  Offset = Offset >> (32 - offsetBits);
 
   //Offset = address & 0x7; // 6 LSBs
   Index = address << (32 - indexBits - offsetBits);

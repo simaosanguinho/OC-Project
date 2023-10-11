@@ -88,7 +88,6 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
 
   CacheLine *Lines = L1cache.lines;
   indexBits = log_base2(L1_N_LINES); // 8 bits
-  // printf("Index bits: %d\n", indexBits);
   offsetBits = 6;
 
   // save offset for later
