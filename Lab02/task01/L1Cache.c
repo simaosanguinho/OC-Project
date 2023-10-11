@@ -64,19 +64,19 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   CacheLine *Lines = L1cache.lines;
   indexBits = log_base2(L1_N_LINES); // 8 bits
-  printf("Index bits: %d\n", indexBits);
+  // printf("Index bits: %d\n", indexBits);
   offsetBits = 6;
 
   // save offset for later
   Offset = address << (32 - offsetBits);
   Offset = Offset >> (32 - offsetBits);
-  printf("\tOFFSET: %d\n", Offset);
+  // printf("\tOFFSET: %d\n", Offset);
 
   Index = address << (32 - indexBits - offsetBits);
   Index = Index >> (32 - indexBits);
 
   Tag = address >> (indexBits + offsetBits);
-  printf("\tTAG: %d\n", Tag);
+  // printf("\tTAG: %d\n", Tag);
 
 
   MemAddress = address >> offsetBits; // again this....!
@@ -84,7 +84,7 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   /* access Cache*/
   CacheLine *Line = &(Lines[Index]);
-  printf("\tIndex: %d\n", Index);
+  // printf("\tIndex: %d\n", Index);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
