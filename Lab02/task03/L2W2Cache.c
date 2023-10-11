@@ -59,7 +59,7 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
     cache.L1cache.init = 1; // set init to 1
   }
 
-  CacheLine *Lines = cache.L1cache.lines; // get lines from L1
+  CacheL1Line *Lines = cache.L1cache.lines; // get lines from L1
 
   offsetBits = log_base2(BLOCK_SIZE);    // how many bits for offset
   Offset = address << (32 - offsetBits); // shift address to the left
@@ -79,7 +79,7 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
-  CacheLine *Line = &(Lines[Index]);
+  CacheL1Line *Line = &(Lines[Index]);
 
   if (!Line->Valid || Line->Tag != Tag) {        // if block not present - MISS
     accessL2(address, TempBlock, MODE_READ);     // get new block from DRAM

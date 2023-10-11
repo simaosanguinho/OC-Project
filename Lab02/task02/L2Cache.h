@@ -18,30 +18,31 @@ void printDRAM();
 int log_base2(int x);
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t, unsigned char *, uint32_t);
+void accessDRAM(uint32_t, unsigned char *, uint8_t);
 
 /*********************** Cache *************************/
 
 void initCache();
-void accessL1(uint32_t, unsigned char *, uint32_t);
 
-void accessL2(uint32_t, unsigned char *, uint32_t);
+void accessL1(uint32_t, unsigned char *, uint8_t);
+
+void accessL2(uint32_t, unsigned char *, uint8_t);
 
 typedef struct CacheLine {
-  unsigned char Valid;
-  unsigned char Dirty;
+  uint8_t Valid;
+  uint8_t Dirty;
   uint32_t Tag;
   unsigned char Data[BLOCK_SIZE];
 } CacheLine;
 
 
 typedef struct L2_Cache {
-  uint32_t init;
+  uint8_t init;
   CacheLine lines[L2_N_LINES];
 } L2_Cache;
 
 typedef struct L1_Cache {
-  uint32_t init;
+  uint8_t init;
   CacheLine lines[L1_N_LINES];
 } L1_Cache;
 

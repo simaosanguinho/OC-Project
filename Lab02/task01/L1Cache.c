@@ -9,22 +9,10 @@ void resetTime() { time = 0; }
 
 uint32_t getTime() { return time; }
 
-/****************  Printable Functions ***************/
-void printL1() {
-  printf("\nL1:\n");
-  for (int i = 0; i < (L1_SIZE / BLOCK_SIZE); i++) {
-    printf("Index %d: Valid %d; Dirty %d; Tag %d\n", i, L1cache.lines[i].Valid, L1cache.lines[i].Dirty, L1cache.lines[i].Tag);
-    for (int j = 0; j < BLOCK_SIZE; j+=WORD_SIZE) {
-      unsigned char data[WORD_SIZE];
-      memcpy(data, &(L1cache.lines[i].Data[j]), WORD_SIZE);
-      printf("%d ", *((unsigned int *)data));
-    }
-    printf("\n");
-  }
-}
+
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
   // printf("AccessDRAM\n");
   // printf("\tAddress: %d\n", address);
   // printf("\tData: %d\n", *data);
@@ -67,8 +55,7 @@ int log_base2(int x) {
     return result;
 }
 
-
-void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset;
   // uint32_t Offset;

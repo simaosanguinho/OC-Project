@@ -9,44 +9,8 @@ void resetTime() { time = 0; }
 
 uint32_t getTime() { return time; }
 
-void printL1() {
-  printf("\nL1:\n");
-  for (int i = 0; i < (L1_SIZE / BLOCK_SIZE ) - 250; i++) {
-    printf("Index %d: Valid %d; Dirty %d; Tag %d\n", i, cache.L1cache.lines[i].Valid, cache.L1cache.lines[i].Dirty, cache.L1cache.lines[i].Tag);
-    for (int j = 0; j < BLOCK_SIZE; j+=WORD_SIZE) {
-      unsigned char data[WORD_SIZE];
-      memcpy(data, &(cache.L1cache.lines[i].Data[j]), WORD_SIZE);
-      printf("%d ", *((unsigned int *)data));
-    }
-    printf("\n");
-  }
-}
-
-void printL2() {
-  printf("\nL2:\n");
-  for (int i = 0; i < (L2_SIZE / (BLOCK_SIZE)); i++) {
-      printf("Index %d; Valid %d; Dirty %d; Tag %d\n", i, cache.L2cache.lines[i].Valid, cache.L2cache.lines[i].Dirty, cache.L2cache.lines[i].Tag);
-      for (int k = 0; k < BLOCK_SIZE; k+=WORD_SIZE) {
-        unsigned char data[WORD_SIZE];
-        memcpy(data, &(cache.L2cache.lines[i].Data[k]), WORD_SIZE);
-        printf("%d ", *((unsigned int *)data));
-      }
-      printf("\n");
-    }
-  }
-
-void printDRAM() {
-  printf("\nDRAM:\n");
-  for (int i = 0; i < DRAM_SIZE; i+=WORD_SIZE) {
-    unsigned char data[WORD_SIZE];
-    memcpy(data, &(DRAM[i]), WORD_SIZE);
-    printf("%d ", *((unsigned int *)data));
-  }
-  printf("\n");
-}
-
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
 
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
@@ -82,7 +46,7 @@ int log_base2(int x) {
     return result;
 }
 
-void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset;
   // uint32_t Offset;
@@ -142,8 +106,7 @@ void accessL1(uint32_t address, unsigned char *data, uint32_t mode) {
   }
 }
 
-
-void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
+void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
 
   uint32_t Tag, Index, MemAddress, Offset;
   // uint32_t Offset;
@@ -205,7 +168,6 @@ void accessL2(uint32_t address, unsigned char *data, uint32_t mode) {
     Line->Dirty = 1;
   }
 }
-
 
 /*********************** Read and Write *************************/
 

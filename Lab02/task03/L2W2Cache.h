@@ -23,35 +23,34 @@ void accessDRAM(uint32_t, unsigned char *, uint8_t);
 /*********************** Cache *************************/
 
 void initCache();
+
 void accessL1(uint32_t, unsigned char *, uint8_t);
 
 void accessL2(uint32_t, unsigned char *, uint8_t);
 
-typedef struct CacheLine {
-  unsigned char Valid;
-  unsigned char Dirty;
+typedef struct CacheL1Line {
+  uint8_t Valid;
+  uint8_t Dirty;
   uint32_t Tag;
   unsigned char Data[BLOCK_SIZE];
-} CacheLine;
+} CacheL1Line;
 
 typedef struct CacheL2Line {
-  unsigned char Valid[2];
-  unsigned char Dirty[2];
+  uint8_t Valid[2];
+  uint8_t Dirty[2];
   uint32_t Tag[2];
   uint8_t Time[2];
   unsigned char Data[BLOCK_SIZE * 2];
 } CacheL2Line;
 
-
-
 typedef struct L2W2_Cache {
-  uint32_t init;
+  uint8_t init;
   CacheL2Line lines[L2_N_LINES];
 } L2_Cache;
 
 typedef struct L1_Cache {
-  uint32_t init;
-  CacheLine lines[L1_N_LINES];
+  uint8_t init;
+  CacheL1Line lines[L1_N_LINES];
 } L1_Cache;
 
 typedef struct Cache {
