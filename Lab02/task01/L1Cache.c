@@ -83,7 +83,9 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   Tag = address >>
         (indexBits + offsetBits); // get tag, by shifting address to the right
 
-  MemAddress = address >> offsetBits;    // again this....!
+  MemAddress =
+      address >>
+      offsetBits; // shift address to the right, so we can remove the offset
   MemAddress = MemAddress << offsetBits; // address of the block in memory
 
   /* access Cache*/
