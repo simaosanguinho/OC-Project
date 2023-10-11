@@ -134,14 +134,14 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
   // save offset for later
   Offset = address << 26;
   Offset = Offset >> 26;
-  printf("        OFFSET: %d\n", Offset);
+  printf("\tOFFSET: %d\n", Offset);
 
   //Offset = address & 0x7; // 6 LSBs
   Index = address << (32 - indexBits - offsetBits);
   Index = Index >> (32 - indexBits);
 
   Tag = address >> (indexBits + offsetBits);
-  printf("        TAG: %d\n", Tag);
+  printf("\tTAG: %d\n", Tag);
 
   // TODO: memadress == tag or tag + index
   MemAddress = address >> offsetBits; // again this....!
@@ -149,7 +149,7 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
 
   /* access Cache*/
   CacheL2Line *Line = &(Lines[Index]);
-  printf("        Index: %d\n", Index);
+  printf("\tIndex: %d\n", Index);
 
   //SEARCH IN THE LINE FOR CORRECT BLOCK
   int found = 0;

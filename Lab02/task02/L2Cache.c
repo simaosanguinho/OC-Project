@@ -80,7 +80,7 @@ void accessL1(uint32_t address, uint8_t *data, uint32_t mode) {
 
   /* access Cache*/
   CacheLine *Line = &(Lines[Index]);
-  printf("        Index: %d\n", Index);
+  printf("\tIndex: %d\n", Index);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessL2(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
@@ -131,14 +131,14 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
   // save offset for later
   Offset = address << 26;
   Offset = Offset >> 26;
-  printf("        OFFSET: %d\n", Offset);
+  printf("\tOFFSET: %d\n", Offset);
 
   //Offset = address & 0x7; // 6 LSBs
   Index = address << (32 - indexBits - offsetBits);
   Index = Index >> (32 - indexBits);
 
   Tag = address >> (indexBits + offsetBits);
-  printf("        TAG: %d\n", Tag);
+  printf("\tTAG: %d\n", Tag);
 
 
   // TODO: memadress == tag or tag + index
@@ -147,7 +147,7 @@ void accessL2(uint32_t address, uint8_t *data, uint32_t mode) {
 
   /* access Cache*/
   CacheLine *Line = &(Lines[Index]);
-  printf("        Index: %d\n", Index);
+  printf("\tIndex: %d\n", Index);
 
   if (!Line->Valid || Line->Tag != Tag) {         // if block not present - miss
     accessDRAM(MemAddress, TempBlock, MODE_READ); // get new block from DRAM
