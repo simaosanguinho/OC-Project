@@ -85,8 +85,8 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   if (!Line->Valid || Line->Tag != Tag) {        // if block not present - miss
     accessL2(address, TempBlock, MODE_READ);     // get new block from DRAM
     if ((Line->Valid) && (Line->Dirty)) {        // line has dirty block
-      uint32_t address_on_L1 = ((Line-> Tag) << (indexBits + offsetBits)) + Index + Offset;
-      accessL2(address_on_L1, Line->Data, MODE_WRITE); // then write back old block
+      uint32_t address_on_L1 = ((Line-> Tag) << (indexBits + offsetBits)) + Index;
+      accessL2(address_on_L1, Line->Data, MODE_WRITE_BLOCK); // then write back old block
     }
     memcpy(&(Line->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
@@ -166,6 +166,12 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
 
   if (mode == MODE_WRITE) { // write data from cache line
     memcpy(&(Line->Data[Offset]), data, WORD_SIZE);
+    time += L2_WRITE_TIME;
+    Line->Dirty = 1; // set dirty bit to 1, because we wrote to the block
+  }
+
+  if (mode == MODE_WRITE_BLOCK) {
+    memcpy(&(Line->Data[0]), data, BLOCK_SIZE);
     time += L2_WRITE_TIME;
     Line->Dirty = 1; // set dirty bit to 1, because we wrote to the block
   }
