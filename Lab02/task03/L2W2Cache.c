@@ -10,7 +10,7 @@ void resetTime() { time = 0; }
 uint32_t getTime() { return time; }
 
 /****************  RAM memory (byte addressable) ***************/
-void accessDRAM(uint32_t address, unsigned char *data, u_int8_t mode) {
+void accessDRAM(uint32_t address, unsigned char *data, uint8_t mode) {
   if (address >= DRAM_SIZE - WORD_SIZE + 1)
     exit(-1);
 
@@ -45,7 +45,7 @@ uint8_t logBase2(int x) { // used to get the number of bits
   return result;
 }
 
-void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
+void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE); // set all values to 0
@@ -85,7 +85,8 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
   if (!Line->Valid || Line->Tag != Tag) {        // if block not present - MISS
     accessL2(address, TempBlock, MODE_READ);     // get new block from DRAM
     if ((Line->Valid) && (Line->Dirty)) {        // if line has dirty block
-      accessL2(address, Line->Data, MODE_WRITE); // then write back old block
+      uint32_t address_on_L1 = ((Line-> Tag) << (indexBits + offsetBits)) + Index + Offset;
+      accessL2(address_on_L1, Line->Data, MODE_WRITE); // then write back old block
     }
     memcpy(&(Line->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
@@ -106,7 +107,7 @@ void accessL1(uint32_t address, unsigned char *data, u_int8_t mode) {
   }
 }
 
-void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
+void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
   uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE); // set all values to 0
@@ -170,6 +171,7 @@ void accessL2(uint32_t address, unsigned char *data, u_int8_t mode) {
 
     if ((Line->Valid[L2_line_block]) &&
         (Line->Dirty[L2_line_block])) { // line has dirty block
+      MemAddress = ((Line-> Tag[L2_line_block]) << (indexBits + offsetBits)) + Index;
       accessDRAM(MemAddress, &(Line->Data[L2_line_block * BLOCK_SIZE]),
                  MODE_WRITE); // then write back old block to DRAM
     }
