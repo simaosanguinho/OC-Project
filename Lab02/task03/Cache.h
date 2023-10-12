@@ -13,7 +13,6 @@
 
 #define MODE_READ 1
 #define MODE_WRITE 0
-#define MODE_WRITE_BLOCK 2
 
 #define DRAM_READ_TIME 100
 #define DRAM_WRITE_TIME 50

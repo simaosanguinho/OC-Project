@@ -85,8 +85,8 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
   if (!Line->Valid || Line->Tag != Tag) {        // if block not present - MISS
     accessL2(address, TempBlock, MODE_READ);     // get new block from DRAM
     if ((Line->Valid) && (Line->Dirty)) {        // if line has dirty block
-      uint32_t address_on_L1 = ((Line-> Tag) << (indexBits + offsetBits)) + Index;
-      accessL2(address_on_L1, Line->Data, MODE_WRITE_BLOCK); // then write back old block
+      MemAddress = ((Line-> Tag) << (indexBits + offsetBits)) + Index;
+      accessL2(MemAddress, Line->Data, MODE_WRITE); // then write back old block
     }
     memcpy(&(Line->Data), TempBlock,
            BLOCK_SIZE); // copy new block to cache line
@@ -186,7 +186,7 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
   } // if miss, then replaced with the correct block
 
   if (mode == MODE_READ) { // read data from cache line
-    memcpy(data, &(Line->Data[Offset]), WORD_SIZE);
+    memcpy(data, &(Line->Data[L2_line_block * BLOCK_SIZE]), BLOCK_SIZE);
     // alter last recently used
     if (L2_line_block == 0) { // if we read from the first block
       Line->Time[0] = 0;      // set that first block to the most recently used
@@ -199,7 +199,7 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
   }
 
   if (mode == MODE_WRITE) { // write data from cache line
-    memcpy(&(Line->Data[Offset]), data, WORD_SIZE);
+    memcpy(&(Line->Data[L2_line_block * BLOCK_SIZE]), data, BLOCK_SIZE);
     // alter last recently used
     if (L2_line_block == 0) { // if we wrote to the first block
       Line->Time[0] = 0;      // set that first block to the most recently used
@@ -212,22 +212,6 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
     Line->Dirty[L2_line_block] = 1; // set dirty bit to 1, because we wrote to
                                     // the block
   }
-
-  if (mode == MODE_WRITE_BLOCK) { // write data from cache line
-    memcpy(&(Line->Data[0]), data, BLOCK_SIZE);
-    // alter last recently used
-    if (L2_line_block == 0) { // if we wrote to the first block
-      Line->Time[0] = 0;      // set that first block to the most recently used
-      Line->Time[1] = 1;      // and the second block to the least recently used
-    } else {                  // else, do the opposite
-      Line->Time[0] = 1;
-      Line->Time[1] = 0;
-    }
-    time += L2_WRITE_TIME;
-    Line->Dirty[L2_line_block] = 1; // set dirty bit to 1, because we wrote to
-                                    // the block
-  }
-
 }
 
 /*********************** Read and Write *************************/
