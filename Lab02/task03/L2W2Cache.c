@@ -108,7 +108,7 @@ void accessL1(uint32_t address, unsigned char *data, uint8_t mode) {
 }
 
 void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
-  uint32_t Tag, Index, MemAddress, Offset, indexBits, offsetBits;
+  uint32_t Tag, Index, MemAddress, indexBits, offsetBits;
   unsigned char TempBlock[BLOCK_SIZE];
   memset(TempBlock, 0, BLOCK_SIZE); // set all values to 0
 
@@ -127,10 +127,6 @@ void accessL2(uint32_t address, unsigned char *data, uint8_t mode) {
 
   CacheL2Line *Lines = cache.L2cache.lines; // get lines from L2
   offsetBits = logBase2(BLOCK_SIZE);        // how many bits for offset
-  Offset = address << (32 - offsetBits);    // shift address to the left
-  Offset =
-      Offset >>
-      (32 - offsetBits); // shift address to the right, so we get the offset
 
   indexBits = logBase2(L2_N_LINES);                 // how many bits for index
   Index = address << (32 - indexBits - offsetBits); // shift address to the left
